@@ -1,19 +1,19 @@
-# Learnings - Banking App with JUnit Testing
+## Tier 2 Concurrency Learnings
 
-## Hardest Bug
-When testing withdrawal of more than balance,
-the test was not catching the exception properly.
+### Hardest Bug
+Two threads withdrawing at the same time could
+cause balance to go below zero (Race Condition).
 
-## How I Fixed It
-Used `assertThrows(IllegalArgumentException.class, () -> ...)`
-which correctly catches the exception thrown by withdraw() ✅
+### How I Fixed It
+Added `synchronized` keyword to deposit() and
+withdraw() methods. This ensures only one thread
+can access the method at a time, preventing
+data corruption.
 
-## What I Learned
-- JUnit 5 lifecycle (@Test, @BeforeEach)
-- assertEquals for checking values
-- assertThrows for testing exceptions
-- BigDecimal for financial calculations
-- Transaction history with timestamps
-- TDD (Test Driven Development) concept
-- Maven dependency management
-- Negative testing (testing error cases)
+### What I Learned
+- Race Condition problem in multi-threading
+- synchronized keyword in Java
+- Thread class and Runnable
+- t.start() and t.join() methods
+- Writing concurrent JUnit tests
+- Why Fintech apps need thread safety
