@@ -22,8 +22,8 @@ public class BankAccount {
         this.transactions = new ArrayList<>();
     }
 
-    // Deposit
-    public void deposit(BigDecimal amount) {
+    // Deposit - synchronized for thread safety
+    public synchronized void deposit(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0)
             throw new IllegalArgumentException(
                     "Deposit amount must be positive!");
@@ -32,8 +32,8 @@ public class BankAccount {
         System.out.println("✅ Deposited: ₹" + amount);
     }
 
-    // Withdraw
-    public void withdraw(BigDecimal amount) {
+    // Withdraw - synchronized for thread safety
+    public synchronized void withdraw(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0)
             throw new IllegalArgumentException(
                     "Withdrawal amount must be positive!");
@@ -46,7 +46,7 @@ public class BankAccount {
     }
 
     // Get balance
-    public BigDecimal getBalance() {
+    public synchronized BigDecimal getBalance() {
         return balance;
     }
 

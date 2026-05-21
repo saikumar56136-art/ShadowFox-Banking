@@ -78,4 +78,49 @@ class BankAccountTest {
         assertThrows(IllegalArgumentException.class, () ->
                 account.withdraw(BigDecimal.ZERO));
     }
+
+    @Test
+    void testConcurrentDeposits() throws InterruptedException {
+        Thread t1 = new Thread(() ->
+                account.deposit(new BigDecimal("1000")));
+        Thread t2 = new Thread(() ->
+                account.deposit(new BigDecimal("1000")));
+
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+
+        assertEquals(new BigDecimal("12000"),
+                account.getBalance());
+    }
+
+    @Test
+    void testConcurrentWithdrawals() throws InterruptedException {
+        Thread t1 = new Thread(() -> {
+            try {
+                account.withdraw(new BigDecimal("3000"));
+            } catch (IllegalArgumentException e) {
+                System.out.println("Thread 1: " + e.getMessage());
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            try {
+                account.withdraw(new BigDecimal("3000"));
+            } catch (IllegalArgumentException e) {
+                System.out.println("Thread 2: " + e.getMessage());
+            }
+        });
+
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+
+        assertTrue(account.getBalance()
+                .compareTo(BigDecimal.ZERO) >= 0);
+        System.out.println("Final Balance: ₹"
+                + account.getBalance());
+    }
 }
